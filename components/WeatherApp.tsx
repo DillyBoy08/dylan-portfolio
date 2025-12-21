@@ -1664,7 +1664,7 @@ export default function WeatherApp() {
 
                       <div className="flex-1 capitalize text-gray-700 dark:text-gray-300">
                         {day.description}
-                        {day.rain && day.rain > 0 && (
+                        {day.rain > 0 && (
                           <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
                             🌧️ {Math.round(day.rain)} mm
                           </div>
