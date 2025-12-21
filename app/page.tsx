@@ -17,14 +17,20 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 export default function Home() {
   useEffect(() => {
     // Ensure page starts at the top on initial load
-    if (typeof window !== "undefined" && !window.location.hash) {
-      window.scrollTo(0, 0);
-      // Force scroll to top after a brief delay to override any default behavior
-      const timer = setTimeout(() => {
+    const scrollToTop = () => {
+      if (typeof window !== "undefined" && !window.location.hash) {
         window.scrollTo(0, 0);
-      }, 0);
-      return () => clearTimeout(timer);
-    }
+      }
+    };
+
+    scrollToTop();
+
+    // Force scroll to top after a brief delay to override any default behavior
+    const timer = setTimeout(() => {
+      scrollToTop();
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (

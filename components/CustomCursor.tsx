@@ -1,11 +1,18 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function CustomCursor() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     // Immediately check if it's a touch device before doing anything
     const isTouchDevice =
       'ontouchstart' in window ||
@@ -99,7 +106,12 @@ export default function CustomCursor() {
       window.removeEventListener("mousemove", updatePosition);
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [mounted]);
+
+  // Prevent hydration mismatch
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <>
