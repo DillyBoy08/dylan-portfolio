@@ -28,7 +28,12 @@
       "Bash(git add:*)",
       "Bash(del nul)",
       "Bash(del temp.txt)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(git reset:*)",
+      "Bash(git commit:*)",
+      "Bash(gh:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
