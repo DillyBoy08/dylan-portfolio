@@ -28,6 +28,21 @@ body {
   background: var(--background);
   overflow-x: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent pull-to-refresh on mobile */
+body {
+  overscroll-behavior-y: none;
+}
+
+/* Better touch target sizes for mobile */
+@media (max-width: 768px) {
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
 @layer utilities {
@@ -77,4 +92,23 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #2563eb, #0891b2);
+}
+
+/* Hide scrollbar on mobile for cleaner look */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
+}
+
+/* Improve tap highlight color */
+* {
+  -webkit-tap-highlight-color: rgba(139, 92, 246, 0.2);
+}
+
+/* Fix viewport height on mobile browsers */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
 }

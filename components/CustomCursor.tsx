@@ -1,11 +1,28 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function CustomCursor() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
+    // Detect if device supports touch (mobile/tablet)
+    const checkTouchDevice = () => {
+      return (
+        'ontouchstart' in window ||
+        navigator.maxTouchPoints > 0 ||
+        window.matchMedia("(pointer: coarse)").matches
+      );
+    };
+
+    setIsTouchDevice(checkTouchDevice());
+  }, []);
+
+  useEffect(() => {
+    // Don't render custom cursor on touch devices
+    if (isTouchDevice) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -87,18 +104,25 @@ export default function CustomCursor() {
       window.removeEventListener("mousemove", updatePosition);
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [isTouchDevice]);
+
+  // Don't render anything on touch devices
+  if (isTouchDevice) {
+    return null;
+  }
 
   return (
     <>
       <canvas
         ref={canvasRef}
-        className="fixed top-0 left-0 w-full h-full pointer-events-none z-[9999]"
+        className="fixed top-0 left-0 w-full h-full pointer-events-none z-[9999] hidden md:block"
       />
 
       <style jsx global>{`
-        * {
-          cursor: none !important;
+        @media (min-width: 768px) and (pointer: fine) {
+          * {
+            cursor: none !important;
+          }
         }
       `}</style>
     </>
