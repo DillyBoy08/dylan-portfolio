@@ -80,7 +80,7 @@ export default function Hero() {
                   "Web Developer",
                   "UI/UX Designer",
                   "Creative Coder",
-                  "Back End Developer"
+                  "Back-End Developer"
                 ]}
               />
             </div>
