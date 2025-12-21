@@ -200,6 +200,23 @@ export default function WeatherApp() {
     }
   };
 
+  const improveWeatherDescription = (description: string): string => {
+    const descriptionMap: Record<string, string> = {
+      'broken clouds': 'mostly cloudy',
+      'scattered clouds': 'partly cloudy',
+      'few clouds': 'partly sunny',
+      'overcast clouds': 'cloudy',
+      'clear sky': 'clear',
+      'light rain': 'light showers',
+      'moderate rain': 'rain',
+      'heavy intensity rain': 'heavy rain',
+      'very heavy rain': 'heavy rain',
+      'extreme rain': 'intense rain',
+    };
+
+    return descriptionMap[description.toLowerCase()] || description;
+  };
+
   const processWeatherData = (data: any) => {
     const currentData = data.current;
     const forecastData = data.forecast;
@@ -209,7 +226,7 @@ export default function WeatherApp() {
       country: currentData.sys.country,
       temperature: Math.round(currentData.main.temp),
       feelsLike: Math.round(currentData.main.feels_like),
-      description: currentData.weather[0].description,
+      description: improveWeatherDescription(currentData.weather[0].description),
       humidity: currentData.main.humidity,
       windSpeed: currentData.wind.speed,
       windDeg: currentData.wind.deg,
@@ -259,7 +276,7 @@ export default function WeatherApp() {
               weekday: "short",
             }),
             temps: [item.main.temp],
-            description: item.weather[0].description,
+            description: improveWeatherDescription(item.weather[0].description),
             icon: item.weather[0].icon,
             humidity: item.main.humidity,
             windSpeed: item.wind.speed,
