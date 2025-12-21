@@ -1,27 +1,22 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export default function CustomCursor() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
-    // Detect if device supports touch (mobile/tablet)
-    const checkTouchDevice = () => {
-      return (
-        'ontouchstart' in window ||
-        navigator.maxTouchPoints > 0 ||
-        window.matchMedia("(pointer: coarse)").matches
-      );
-    };
+    // Immediately check if it's a touch device before doing anything
+    const isTouchDevice =
+      'ontouchstart' in window ||
+      navigator.maxTouchPoints > 0 ||
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.innerWidth < 768;
 
-    setIsTouchDevice(checkTouchDevice());
-  }, []);
-
-  useEffect(() => {
-    // Don't render custom cursor on touch devices
-    if (isTouchDevice) return;
+    // Exit early if touch device
+    if (isTouchDevice) {
+      return;
+    }
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -104,24 +99,27 @@ export default function CustomCursor() {
       window.removeEventListener("mousemove", updatePosition);
       window.removeEventListener("resize", handleResize);
     };
-  }, [isTouchDevice]);
-
-  // Don't render anything on touch devices
-  if (isTouchDevice) {
-    return null;
-  }
+  }, []);
 
   return (
     <>
       <canvas
         ref={canvasRef}
-        className="fixed top-0 left-0 w-full h-full pointer-events-none z-[9999] hidden md:block"
+        className="fixed top-0 left-0 w-full h-full pointer-events-none z-[9999] max-md:hidden"
       />
 
       <style jsx global>{`
+        /* Only hide cursor on desktop with fine pointer (not touch) */
         @media (min-width: 768px) and (pointer: fine) {
           * {
             cursor: none !important;
+          }
+        }
+
+        /* Ensure cursor shows on touch devices and mobile */
+        @media (pointer: coarse), (max-width: 767px) {
+          * {
+            cursor: auto !important;
           }
         }
       `}</style>
