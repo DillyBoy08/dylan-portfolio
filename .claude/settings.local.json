@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app:*)",
+      "Bash(npm install)",
+      "Bash(npm run dev:*)",
+      "Bash(taskkill /F /PID 25588)",
+      "Bash(taskkill //F //PID 20304)",
+      "Bash(npm ls:*)",
+      "Bash(taskkill //F //PID 23532)",
+      "Bash(taskkill //F //PID 27008)",
+      "Bash(taskkill //F //PID 1984)",
+      "Bash(npm install:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill //F //PID 23264)",
+      "Bash(taskkill:*)",
+      "Bash(dir:*)",
+      "Bash(curl:*)",
+      "WebFetch(domain:openweathermap.org)",
+      "Bash(del \"C:\\Users\\Dylan\\Documents\\Dylan Portfolio\\components\\SnakeGame.tsx\")",
+      "Bash(del \"C:\\Users\\Dylan\\Documents\\Dylan Portfolio\\app\\favicon.ico\")",
+      "Bash(npm run build:*)",
+      "Bash(del \"C:\\\\Users\\\\Dylan\\\\Documents\\\\Dylan Portfolio\\\\app\\\\resume-builder\\\\page.tsx\")",
+      "Bash(del \"C:\\\\Users\\\\Dylan\\\\Documents\\\\Dylan Portfolio\\\\components\\\\ResumeBuilder.tsx\")",
+      "Bash(del \"C:\\\\Users\\\\Dylan\\\\Documents\\\\Dylan Portfolio\\\\app\\\\api\\\\ai-resume\\\\route.ts\")",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(del nul)",
+      "Bash(del temp.txt)",
+      "Bash(rm:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
