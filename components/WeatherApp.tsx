@@ -1666,15 +1666,15 @@ export default function WeatherApp() {
                         {day.description}
                         {day.rain && day.rain > 0 && (
                           <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                            🌧️ {day.rain.toFixed(1)} mm
+                            🌧️ {Math.round(day.rain)} mm
                           </div>
                         )}
                       </div>
 
                       <div className="flex items-center gap-4">
-                        <div className="text-sm text-gray-500 dark:text-gray-400">{day.tempMin}°</div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">{Math.round(day.tempMin)}°</div>
                         <div className="w-16 h-2 bg-gradient-to-r from-blue-400 to-red-400 rounded-full"></div>
-                        <div className="text-lg font-bold text-gray-900 dark:text-white">{day.tempMax}°</div>
+                        <div className="text-lg font-bold text-gray-900 dark:text-white">{Math.round(day.tempMax)}°</div>
                       </div>
                     </motion.div>
                   ))}
