@@ -5,10 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function LoadingScreen() {
   const [isLoading, setIsLoading] = useState(true);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     // Simple timer - loads quickly
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -16,11 +14,6 @@ export default function LoadingScreen() {
 
     return () => clearTimeout(timer);
   }, []);
-
-  // Prevent hydration mismatch
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <AnimatePresence>

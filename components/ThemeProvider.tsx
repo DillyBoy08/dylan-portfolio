@@ -13,10 +13,8 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("dark");
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     // Check for saved theme preference or default to dark
     const savedTheme = localStorage.getItem("theme") as Theme;
     if (savedTheme) {
@@ -36,9 +34,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <div style={!mounted ? { visibility: 'hidden' } : undefined}>
-        {children}
-      </div>
+      {children}
     </ThemeContext.Provider>
   );
 }
