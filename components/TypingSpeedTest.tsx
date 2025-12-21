@@ -206,11 +206,11 @@ export default function TypingSpeedTest() {
 
   const getCharacterClass = (index: number) => {
     if (index >= userInput.length) {
-      return "text-gray-400/50 dark:text-gray-600/50";
+      return "text-gray-400 dark:text-gray-500";
     }
     return userInput[index] === currentText[index]
-      ? "text-green-500 dark:text-green-400 bg-green-500/10 dark:bg-green-400/10"
-      : "text-red-500 dark:text-red-400 bg-red-500/20 dark:bg-red-400/20";
+      ? "text-emerald-500 dark:text-emerald-400 bg-emerald-500/10"
+      : "text-rose-500 dark:text-rose-400 bg-rose-500/10";
   };
 
   const formatTime = (seconds: number) => {
@@ -222,11 +222,11 @@ export default function TypingSpeedTest() {
   const progress = (userInput.length / currentText.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950 py-12 px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 py-8 sm:py-16 px-4 sm:px-6 relative overflow-hidden">
       {/* Animated background gradient orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute top-0 left-1/4 w-96 h-96 bg-purple-300/30 dark:bg-purple-500/20 rounded-full blur-3xl"
+          className="absolute top-0 left-1/4 w-64 sm:w-96 h-64 sm:h-96 bg-violet-300/20 dark:bg-violet-500/10 rounded-full blur-3xl"
           animate={{
             x: [0, 100, 0],
             y: [0, 50, 0],
@@ -235,7 +235,7 @@ export default function TypingSpeedTest() {
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-300/30 dark:bg-blue-500/20 rounded-full blur-3xl"
+          className="absolute bottom-0 right-1/4 w-64 sm:w-96 h-64 sm:h-96 bg-cyan-300/20 dark:bg-cyan-500/10 rounded-full blur-3xl"
           animate={{
             x: [0, -100, 0],
             y: [0, -50, 0],
@@ -269,34 +269,28 @@ export default function TypingSpeedTest() {
         ))}
       </AnimatePresence>
 
-      <div className="max-w-5xl mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+          className="text-center mb-6 sm:mb-10"
         >
-          <motion.div
-            className="inline-block"
-            animate={{ rotate: [0, 5, -5, 0] }}
-            transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-          >
-            <h1 className="text-6xl sm:text-7xl font-black bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 dark:from-purple-400 dark:via-blue-400 dark:to-indigo-400 bg-clip-text text-transparent mb-4">
-              Typing Speed Test
-            </h1>
-          </motion.div>
-          <p className="text-gray-600 dark:text-gray-400 text-lg font-medium">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 dark:from-violet-400 dark:via-purple-400 dark:to-fuchsia-400 bg-clip-text text-transparent mb-3">
+            Typing Speed Test
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg font-medium">
             Test your typing speed and accuracy
           </p>
           {highScore > 0 && (
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 dark:bg-yellow-900/30 border-2 border-yellow-400 dark:border-yellow-600 rounded-full"
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-100 to-yellow-100 dark:from-amber-900/30 dark:to-yellow-900/30 border border-amber-300 dark:border-amber-700 rounded-full shadow-sm"
             >
-              <span className="text-2xl">🏆</span>
-              <span className="font-bold text-yellow-700 dark:text-yellow-400">
-                High Score: {highScore} WPM
+              <span className="text-xl">🏆</span>
+              <span className="font-bold text-amber-700 dark:text-amber-400 text-sm sm:text-base">
+                Best: {highScore} WPM
               </span>
             </motion.div>
           )}
@@ -306,7 +300,7 @@ export default function TypingSpeedTest() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex justify-center gap-3 mb-8 flex-wrap"
+          className="flex justify-center gap-2 sm:gap-3 mb-6 sm:mb-8 flex-wrap px-2"
         >
           {(Object.keys(textModes) as TextMode[]).map((m, idx) => (
             <motion.button
@@ -317,10 +311,10 @@ export default function TypingSpeedTest() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
-              className={`px-6 py-3 rounded-xl font-bold transition-all ${
+              className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold text-sm sm:text-base transition-all ${
                 mode === m
-                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-xl shadow-purple-500/50 dark:shadow-purple-700/50"
-                  : "bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-slate-700 border-2 border-gray-200 dark:border-slate-600"
+                  ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-lg shadow-violet-500/30"
+                  : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700"
               }`}
             >
               {m.charAt(0).toUpperCase() + m.slice(1)}
@@ -328,46 +322,46 @@ export default function TypingSpeedTest() {
           ))}
         </motion.div>
 
-        {/* Stats */}
+        {/* Stats Grid - Optimized for Mobile */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8"
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8"
         >
           <motion.div
-            whileHover={{ scale: 1.05, rotate: 2 }}
-            className="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-2xl p-6 text-center shadow-xl text-white"
+            whileHover={{ scale: 1.05 }}
+            className="bg-gradient-to-br from-blue-500 to-cyan-600 dark:from-blue-600 dark:to-cyan-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-lg text-white"
           >
-            <div className="text-5xl font-black mb-1">{wpm}</div>
-            <div className="text-sm font-semibold opacity-90">WPM</div>
+            <div className="text-3xl sm:text-4xl lg:text-5xl font-black mb-1">{wpm}</div>
+            <div className="text-xs sm:text-sm font-semibold opacity-90">WPM</div>
           </motion.div>
           <motion.div
-            whileHover={{ scale: 1.05, rotate: -2 }}
-            className="bg-gradient-to-br from-green-500 to-emerald-600 dark:from-green-600 dark:to-emerald-700 rounded-2xl p-6 text-center shadow-xl text-white"
+            whileHover={{ scale: 1.05 }}
+            className="bg-gradient-to-br from-emerald-500 to-green-600 dark:from-emerald-600 dark:to-green-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-lg text-white"
           >
-            <div className="text-5xl font-black mb-1">{accuracy}%</div>
-            <div className="text-sm font-semibold opacity-90">Accuracy</div>
+            <div className="text-3xl sm:text-4xl lg:text-5xl font-black mb-1">{accuracy}%</div>
+            <div className="text-xs sm:text-sm font-semibold opacity-90">Accuracy</div>
           </motion.div>
           <motion.div
-            whileHover={{ scale: 1.05, rotate: 2 }}
-            className="bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 rounded-2xl p-6 text-center shadow-xl text-white"
+            whileHover={{ scale: 1.05 }}
+            className="bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-lg text-white"
           >
-            <div className="text-5xl font-black mb-1">{formatTime(timer)}</div>
-            <div className="text-sm font-semibold opacity-90">Time</div>
+            <div className="text-3xl sm:text-4xl lg:text-5xl font-black mb-1">{formatTime(timer)}</div>
+            <div className="text-xs sm:text-sm font-semibold opacity-90">Time</div>
           </motion.div>
           <motion.div
-            whileHover={{ scale: 1.05, rotate: -2 }}
-            className="bg-gradient-to-br from-orange-500 to-red-600 dark:from-orange-600 dark:to-red-700 rounded-2xl p-6 text-center shadow-xl text-white"
+            whileHover={{ scale: 1.05 }}
+            className="bg-gradient-to-br from-orange-500 to-amber-600 dark:from-orange-600 dark:to-amber-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-lg text-white"
           >
-            <div className="text-5xl font-black mb-1">{streak}</div>
-            <div className="text-sm font-semibold opacity-90">Streak</div>
+            <div className="text-3xl sm:text-4xl lg:text-5xl font-black mb-1">{streak}</div>
+            <div className="text-xs sm:text-sm font-semibold opacity-90">Streak</div>
           </motion.div>
           <motion.div
-            whileHover={{ scale: 1.05, rotate: 2 }}
-            className="bg-gradient-to-br from-pink-500 to-rose-600 dark:from-pink-600 dark:to-rose-700 rounded-2xl p-6 text-center shadow-xl text-white"
+            whileHover={{ scale: 1.05 }}
+            className="bg-gradient-to-br from-rose-500 to-pink-600 dark:from-rose-600 dark:to-pink-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-lg text-white col-span-2 sm:col-span-1"
           >
-            <div className="text-5xl font-black mb-1">{errors}</div>
-            <div className="text-sm font-semibold opacity-90">Errors</div>
+            <div className="text-3xl sm:text-4xl lg:text-5xl font-black mb-1">{errors}</div>
+            <div className="text-xs sm:text-sm font-semibold opacity-90">Errors</div>
           </motion.div>
         </motion.div>
 
@@ -375,11 +369,11 @@ export default function TypingSpeedTest() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl rounded-3xl p-8 mb-6 border-2 border-gray-200 dark:border-slate-700 shadow-2xl relative overflow-hidden"
+          className="bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-8 mb-6 border border-gray-200 dark:border-slate-700 shadow-xl relative overflow-hidden"
         >
           {/* Progress Bar */}
           <motion.div
-            className="absolute top-0 left-0 h-2 bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500 rounded-full"
+            className="absolute top-0 left-0 h-1 sm:h-1.5 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500"
             initial={{ width: "0%" }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.2 }}
@@ -392,14 +386,14 @@ export default function TypingSpeedTest() {
                 initial={{ opacity: 0, scale: 0, y: -20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0 }}
-                className="absolute top-8 right-8 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg"
+                className="absolute top-4 sm:top-8 right-4 sm:right-8 bg-gradient-to-r from-amber-400 to-orange-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-bold text-xs sm:text-sm shadow-lg"
               >
                 🔥 {streak} streak!
               </motion.div>
             )}
           </AnimatePresence>
 
-          <div className="text-2xl md:text-3xl leading-loose font-mono mb-8 select-none min-h-[120px] p-6 bg-gray-50 dark:bg-slate-900 rounded-xl">
+          <div className="text-lg sm:text-xl md:text-2xl leading-relaxed sm:leading-loose font-mono mb-6 sm:mb-8 select-none min-h-[80px] sm:min-h-[120px] p-4 sm:p-6 bg-slate-50 dark:bg-slate-900 rounded-xl overflow-x-auto">
             {currentText.split("").map((char, index) => (
               <motion.span
                 key={index}
@@ -407,7 +401,7 @@ export default function TypingSpeedTest() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: index * 0.01 }}
                 className={`${getCharacterClass(index)} px-0.5 rounded transition-all duration-100 ${
-                  index === userInput.length ? "animate-pulse border-l-2 border-blue-500" : ""
+                  index === userInput.length ? "animate-pulse border-l-2 border-violet-500" : ""
                 }`}
               >
                 {char}
@@ -424,17 +418,17 @@ export default function TypingSpeedTest() {
             onKeyDown={handleKeyDown}
             disabled={finished}
             autoFocus
-            whileFocus={{ scale: 1.02 }}
-            className="w-full px-6 py-5 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-900 dark:to-slate-800 border-2 border-gray-300 dark:border-slate-600 rounded-xl text-lg font-mono focus:outline-none focus:border-purple-500 dark:focus:border-purple-400 focus:ring-4 focus:ring-purple-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 dark:text-white shadow-inner"
-            placeholder={finished ? "Test completed!" : "Start typing..."}
+            whileFocus={{ scale: 1.01 }}
+            className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-slate-50 dark:bg-slate-900 border-2 border-gray-200 dark:border-slate-700 rounded-xl text-base sm:text-lg font-mono focus:outline-none focus:border-violet-500 dark:focus:border-violet-400 focus:ring-4 focus:ring-violet-500/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 dark:text-white"
+            placeholder={finished ? "Test completed! 🎉" : "Click here and start typing..."}
           />
 
-          <div className="mt-4 text-sm text-gray-500 dark:text-gray-400 text-center flex items-center justify-center gap-4 flex-wrap">
-            <span>
-              Press <kbd className="px-3 py-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg font-semibold text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 shadow">Tab</kbd> to restart
+          <div className="mt-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400 text-center flex items-center justify-center gap-2 sm:gap-4 flex-wrap">
+            <span className="flex items-center gap-1.5">
+              Press <kbd className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg font-semibold text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 text-xs sm:text-sm">Tab</kbd> to restart
             </span>
-            <span className="text-gray-300 dark:text-gray-600">•</span>
-            <span>{currentText.length} characters</span>
+            <span className="hidden sm:inline text-gray-300 dark:text-gray-600">•</span>
+            <span className="hidden sm:inline">{currentText.length} characters</span>
           </div>
         </motion.div>
 
@@ -446,13 +440,13 @@ export default function TypingSpeedTest() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: 50 }}
               transition={{ type: "spring", bounce: 0.4 }}
-              className="bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700 rounded-3xl p-10 text-white text-center shadow-2xl relative overflow-hidden"
+              className="bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-700 rounded-2xl sm:rounded-3xl p-6 sm:p-10 text-white text-center shadow-2xl relative overflow-hidden"
             >
               {/* Confetti Effect */}
               {[...Array(20)].map((_, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-3 h-3 bg-yellow-300 rounded-full"
+                  className="absolute w-2 h-2 sm:w-3 sm:h-3 bg-yellow-300 rounded-full"
                   initial={{
                     x: "50%",
                     y: "50%",
@@ -475,7 +469,7 @@ export default function TypingSpeedTest() {
                 initial={{ scale: 0 }}
                 animate={{ scale: [0, 1.2, 1] }}
                 transition={{ delay: 0.2, type: "spring" }}
-                className="text-8xl mb-6"
+                className="text-6xl sm:text-8xl mb-4 sm:mb-6"
               >
                 {wpm > highScore ? "🏆" : "🎉"}
               </motion.div>
@@ -484,50 +478,50 @@ export default function TypingSpeedTest() {
                 <motion.div
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mb-4 px-6 py-3 bg-yellow-400 text-yellow-900 rounded-full font-black text-lg inline-block"
+                  className="mb-4 px-4 sm:px-6 py-2 sm:py-3 bg-amber-400 text-amber-900 rounded-full font-black text-sm sm:text-lg inline-block"
                 >
                   🎊 NEW HIGH SCORE! 🎊
                 </motion.div>
               )}
 
-              <h2 className="text-4xl font-black mb-8">Test Complete!</h2>
+              <h2 className="text-3xl sm:text-4xl font-black mb-6 sm:mb-8">Test Complete!</h2>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="bg-white/20 backdrop-blur-sm rounded-2xl p-6"
+                  className="bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6"
                 >
-                  <div className="text-6xl font-black mb-2">{wpm}</div>
-                  <div className="text-sm font-semibold opacity-90">WPM</div>
+                  <div className="text-4xl sm:text-6xl font-black mb-2">{wpm}</div>
+                  <div className="text-xs sm:text-sm font-semibold opacity-90">WPM</div>
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="bg-white/20 backdrop-blur-sm rounded-2xl p-6"
+                  className="bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6"
                 >
-                  <div className="text-6xl font-black mb-2">{accuracy}%</div>
-                  <div className="text-sm font-semibold opacity-90">Accuracy</div>
+                  <div className="text-4xl sm:text-6xl font-black mb-2">{accuracy}%</div>
+                  <div className="text-xs sm:text-sm font-semibold opacity-90">Accuracy</div>
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
-                  className="bg-white/20 backdrop-blur-sm rounded-2xl p-6"
+                  className="bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6"
                 >
-                  <div className="text-6xl font-black mb-2">{maxStreak}</div>
-                  <div className="text-sm font-semibold opacity-90">Max Streak</div>
+                  <div className="text-4xl sm:text-6xl font-black mb-2">{maxStreak}</div>
+                  <div className="text-xs sm:text-sm font-semibold opacity-90">Max Streak</div>
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6 }}
-                  className="bg-white/20 backdrop-blur-sm rounded-2xl p-6"
+                  className="bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6"
                 >
-                  <div className="text-6xl font-black mb-2">{formatTime(timer)}</div>
-                  <div className="text-sm font-semibold opacity-90">Time</div>
+                  <div className="text-4xl sm:text-6xl font-black mb-2">{formatTime(timer)}</div>
+                  <div className="text-xs sm:text-sm font-semibold opacity-90">Time</div>
                 </motion.div>
               </div>
 
@@ -538,36 +532,13 @@ export default function TypingSpeedTest() {
                 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-10 py-5 bg-white text-purple-600 rounded-2xl font-black text-xl hover:bg-gray-100 transition-colors shadow-xl"
+                className="px-8 sm:px-10 py-4 sm:py-5 bg-white text-violet-600 rounded-xl sm:rounded-2xl font-black text-lg sm:text-xl hover:bg-gray-100 transition-colors shadow-xl"
               >
                 Try Again
               </motion.button>
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Tips */}
-        {!started && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-center"
-          >
-            <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 rounded-full border-2 border-purple-200 dark:border-purple-800">
-              <motion.span
-                animate={{ rotate: [0, 15, -15, 0] }}
-                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                className="text-2xl"
-              >
-                💡
-              </motion.span>
-              <span className="font-semibold text-purple-800 dark:text-purple-300">
-                Tip: Focus on accuracy first, speed will come naturally!
-              </span>
-            </div>
-          </motion.div>
-        )}
       </div>
     </div>
   );
