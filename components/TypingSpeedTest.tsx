@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 const textModes = {
   quotes: [
@@ -70,9 +70,26 @@ export default function TypingSpeedTest() {
   const inputRef = useRef<HTMLInputElement>(null);
   const particleIdRef = useRef(0);
 
+  const resetTest = useCallback(() => {
+    const texts = textModes[mode];
+    const randomText = texts[Math.floor(Math.random() * texts.length)];
+    setCurrentText(randomText);
+    setUserInput("");
+    setStarted(false);
+    setFinished(false);
+    setStartTime(null);
+    setWpm(0);
+    setAccuracy(100);
+    setTimer(0);
+    setStreak(0);
+    setMaxStreak(0);
+    setErrors(0);
+    setParticles([]);
+  }, [mode]);
+
   useEffect(() => {
     resetTest();
-  }, [mode]);
+  }, [mode, resetTest]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -92,23 +109,6 @@ export default function TypingSpeedTest() {
       return () => clearTimeout(timeout);
     }
   }, [particles]);
-
-  const resetTest = () => {
-    const texts = textModes[mode];
-    const randomText = texts[Math.floor(Math.random() * texts.length)];
-    setCurrentText(randomText);
-    setUserInput("");
-    setStarted(false);
-    setFinished(false);
-    setStartTime(null);
-    setWpm(0);
-    setAccuracy(100);
-    setTimer(0);
-    setStreak(0);
-    setMaxStreak(0);
-    setErrors(0);
-    setParticles([]);
-  };
 
   const createParticle = (x: number, y: number, isCorrect: boolean) => {
     const colors = isCorrect

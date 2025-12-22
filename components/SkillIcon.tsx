@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, Suspense } from "react";
+import { useRef, useState, useEffect, useCallback, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Sphere, Text3D, Environment, Center, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
@@ -42,7 +42,7 @@ function InteractiveSphere({ color, logo, modelPath, modelScale }: InteractiveSp
     previousMousePosition.current = { x: e.clientX, y: e.clientY };
   };
 
-  const handlePointerMove = (e: any) => {
+  const handlePointerMove = useCallback((e: any) => {
     if (isDragging) {
       const deltaX = e.clientX - previousMousePosition.current.x;
       const deltaY = e.clientY - previousMousePosition.current.y;
@@ -54,11 +54,11 @@ function InteractiveSphere({ color, logo, modelPath, modelScale }: InteractiveSp
 
       previousMousePosition.current = { x: e.clientX, y: e.clientY };
     }
-  };
+  }, [isDragging]);
 
-  const handlePointerUp = () => {
+  const handlePointerUp = useCallback(() => {
     setIsDragging(false);
-  };
+  }, []);
 
   useEffect(() => {
     if (isDragging) {
@@ -69,7 +69,7 @@ function InteractiveSphere({ color, logo, modelPath, modelScale }: InteractiveSp
         window.removeEventListener("pointerup", handlePointerUp);
       };
     }
-  }, [isDragging]);
+  }, [isDragging, handlePointerMove, handlePointerUp]);
 
   return (
     <group ref={groupRef}>
