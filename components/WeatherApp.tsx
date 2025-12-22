@@ -113,115 +113,6 @@ export default function WeatherApp() {
     };
   }, [isMobile, prefersReducedMotion]);
 
-  useEffect(() => {
-    getCurrentLocation();
-    // Hide intro animation after 3 seconds
-    const timer = setTimeout(() => setShowIntro(false), 3000);
-    return () => clearTimeout(timer);
-  }, [getCurrentLocation]);
-
-  useEffect(() => {
-    const fetchSuggestions = async () => {
-      if (city.length < 2) {
-        setSuggestions([]);
-        setShowSuggestions(false);
-        return;
-      }
-
-      try {
-        const response = await fetch(`/api/geocode?q=${encodeURIComponent(city)}`);
-        const data = await response.json();
-        setSuggestions(data.suggestions || []);
-        setShowSuggestions(data.suggestions && data.suggestions.length > 0);
-      } catch (err) {
-        setSuggestions([]);
-        setShowSuggestions(false);
-      }
-    };
-
-    const timer = setTimeout(fetchSuggestions, 300);
-    return () => clearTimeout(timer);
-  }, [city]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (suggestionRef.current && !suggestionRef.current.contains(event.target as Node)) {
-        setShowSuggestions(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const getCurrentLocation = useCallback(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setSelectedCityName("");
-          fetchWeatherByCoords(position.coords.latitude, position.coords.longitude);
-        },
-        () => {
-          setSelectedCityName("Durbanville");
-          fetchWeather("Durbanville");
-        }
-      );
-    } else {
-      setSelectedCityName("Durbanville");
-      fetchWeather("Durbanville");
-    }
-  }, [fetchWeatherByCoords, fetchWeather]);
-
-  const fetchWeatherByCoords = useCallback(async (lat: number, lon: number) => {
-    setLoading(true);
-    setError("");
-    setCurrentCoords({ lat, lon });
-
-    try {
-      const response = await fetch(`/api/weather?lat=${lat}&lon=${lon}&unit=${unit}`);
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch weather");
-      }
-
-      const data = await response.json();
-      processWeatherData(data);
-    } catch (err) {
-      setError("Failed to get weather for your location");
-      setCurrentCoords(null);
-    } finally {
-      setLoading(false);
-    }
-  }, [unit, processWeatherData]);
-
-  const fetchWeather = useCallback(async (cityName: string) => {
-    if (!cityName.trim()) return;
-
-    setLoading(true);
-    setError("");
-
-    try {
-      const response = await fetch(
-        `/api/weather?city=${encodeURIComponent(cityName)}&unit=${unit}`
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "City not found");
-      }
-
-      const data = await response.json();
-      processWeatherData(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch weather data");
-      setWeather(null);
-      setHourlyForecast([]);
-      setDailyForecast([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [unit, processWeatherData]);
-
   const improveWeatherDescription = useCallback((description: string): string => {
     const descriptionMap: Record<string, string> = {
       'broken clouds': 'mostly cloudy',
@@ -323,6 +214,74 @@ export default function WeatherApp() {
       setDailyForecast(daily);
     }
   }, [selectedCityName, improveWeatherDescription]);
+
+  const fetchWeatherByCoords = useCallback(async (lat: number, lon: number) => {
+    setLoading(true);
+    setError("");
+    setCurrentCoords({ lat, lon });
+
+    try {
+      const response = await fetch(`/api/weather?lat=${lat}&lon=${lon}&unit=${unit}`);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch weather");
+      }
+
+      const data = await response.json();
+      processWeatherData(data);
+    } catch (err) {
+      setError("Failed to get weather for your location");
+      setCurrentCoords(null);
+    } finally {
+      setLoading(false);
+    }
+  }, [unit, processWeatherData]);
+
+  const fetchWeather = useCallback(async (cityName: string) => {
+    if (!cityName.trim()) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(
+        `/api/weather?city=${encodeURIComponent(cityName)}&unit=${unit}`
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "City not found");
+      }
+
+      const data = await response.json();
+      processWeatherData(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch weather data");
+      setWeather(null);
+      setHourlyForecast([]);
+      setDailyForecast([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [unit, processWeatherData]);
+
+  const getCurrentLocation = useCallback(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setSelectedCityName("");
+          fetchWeatherByCoords(position.coords.latitude, position.coords.longitude);
+        },
+        () => {
+          setSelectedCityName("Durbanville");
+          fetchWeather("Durbanville");
+        }
+      );
+    } else {
+      setSelectedCityName("Durbanville");
+      fetchWeather("Durbanville");
+    }
+  }, [fetchWeatherByCoords, fetchWeather]);
 
   const handleSuggestionClick = (suggestion: CitySuggestion) => {
     setCity(suggestion.name);
@@ -457,6 +416,47 @@ export default function WeatherApp() {
   const getBackgroundGradient = () => {
     return "bg-white dark:bg-slate-950";
   };
+
+  useEffect(() => {
+    getCurrentLocation();
+    // Hide intro animation after 3 seconds
+    const timer = setTimeout(() => setShowIntro(false), 3000);
+    return () => clearTimeout(timer);
+  }, [getCurrentLocation]);
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (city.length < 2) {
+        setSuggestions([]);
+        setShowSuggestions(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/geocode?q=${encodeURIComponent(city)}`);
+        const data = await response.json();
+        setSuggestions(data.suggestions || []);
+        setShowSuggestions(data.suggestions && data.suggestions.length > 0);
+      } catch (err) {
+        setSuggestions([]);
+        setShowSuggestions(false);
+      }
+    };
+
+    const timer = setTimeout(fetchSuggestions, 300);
+    return () => clearTimeout(timer);
+  }, [city]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (suggestionRef.current && !suggestionRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div className={`min-h-screen ${getBackgroundGradient()} transition-colors duration-1000 relative`}>
