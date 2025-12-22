@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   WiDaySunny,
   WiCloudy,
@@ -90,6 +90,28 @@ export default function WeatherApp() {
   const [showIntro, setShowIntro] = useState(true);
   const suggestionRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Performance optimizations
+  const prefersReducedMotion = useReducedMotion();
+  const isMobile = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth < 768;
+  }, []);
+
+  // Reduce particle count on mobile
+  const particleCount = useMemo(() => {
+    if (prefersReducedMotion) return 0;
+    if (isMobile) return {
+      rain: 15,
+      snow: 10,
+      thunderstorm: 20,
+    };
+    return {
+      rain: 40,
+      snow: 30,
+      thunderstorm: 50,
+    };
+  }, [isMobile, prefersReducedMotion]);
 
   useEffect(() => {
     getCurrentLocation();
@@ -440,7 +462,7 @@ export default function WeatherApp() {
     <div className={`min-h-screen ${getBackgroundGradient()} transition-colors duration-1000 relative`}>
       {/* Opening Clouds Animation */}
       <AnimatePresence>
-        {showIntro && (
+        {showIntro && !isMobile && !prefersReducedMotion && (
           <motion.div
             className="fixed inset-0 z-[100] pointer-events-none"
             initial={{ opacity: 1 }}
@@ -1141,24 +1163,50 @@ export default function WeatherApp() {
             </motion.div>
           </motion.div>
         )}
+
+        {/* Simplified Mobile Intro Animation */}
+        {showIntro && isMobile && !prefersReducedMotion && (
+          <motion.div
+            className="fixed inset-0 z-[100] pointer-events-none bg-gradient-to-b from-sky-400 via-blue-300 to-blue-200 dark:from-slate-800 dark:via-slate-700 dark:to-slate-600"
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1, delay: 0.5 }}
+          >
+            <div className="absolute inset-0 flex items-center justify-center">
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="text-8xl"
+              >
+                ☀️
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* Weather Animations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         {/* Rain Effect */}
-        {weather && (weather.main === "rain" || weather.main === "drizzle") && (
+        {weather && (weather.main === "rain" || weather.main === "drizzle") && particleCount.rain > 0 && (
           <>
-            {[...Array(40)].map((_, i) => (
+            {[...Array(particleCount.rain)].map((_, i) => (
               <motion.div
                 key={`rain-${i}`}
                 className="absolute w-0.5 h-12 bg-gradient-to-b from-blue-400/60 to-transparent"
+                style={{
+                  willChange: 'transform',
+                  transform: 'translateZ(0)',
+                }}
                 initial={{
-                  x: Math.random() * window.innerWidth,
+                  x: `${Math.random() * 100}%`,
                   y: -50,
                 }}
                 animate={{
-                  y: window.innerHeight + 50,
-                  x: Math.random() * window.innerWidth - 50,
+                  y: typeof window !== 'undefined' ? window.innerHeight + 50 : 1000,
+                  x: `${Math.random() * 100 - 5}%`,
                 }}
                 transition={{
                   duration: weather.main === "drizzle" ? 1.5 : 1,
@@ -1172,19 +1220,23 @@ export default function WeatherApp() {
         )}
 
         {/* Snow Effect */}
-        {weather && weather.main === "snow" && (
+        {weather && weather.main === "snow" && particleCount.snow > 0 && (
           <>
-            {[...Array(30)].map((_, i) => (
+            {[...Array(particleCount.snow)].map((_, i) => (
               <motion.div
                 key={`snow-${i}`}
                 className="absolute text-2xl"
+                style={{
+                  willChange: 'transform',
+                  transform: 'translateZ(0)',
+                }}
                 initial={{
-                  x: Math.random() * window.innerWidth,
+                  x: `${Math.random() * 100}%`,
                   y: -20,
                 }}
                 animate={{
-                  y: window.innerHeight + 20,
-                  x: Math.random() * window.innerWidth + Math.sin(i) * 100,
+                  y: typeof window !== 'undefined' ? window.innerHeight + 20 : 1000,
+                  x: `${Math.random() * 100 + Math.sin(i) * 10}%`,
                 }}
                 transition={{
                   duration: 3 + Math.random() * 2,
@@ -1221,33 +1273,39 @@ export default function WeatherApp() {
         {/* Thunder/Lightning Effect */}
         {weather && weather.main === "thunderstorm" && (
           <>
-            <motion.div
-              className="absolute inset-0 bg-yellow-200/0"
-              animate={{
-                backgroundColor: [
-                  "rgba(254, 240, 138, 0)",
-                  "rgba(254, 240, 138, 0.3)",
-                  "rgba(254, 240, 138, 0)",
-                ],
-              }}
-              transition={{
-                duration: 0.2,
-                repeat: Infinity,
-                repeatDelay: Math.random() * 5 + 3,
-              }}
-            />
+            {!prefersReducedMotion && (
+              <motion.div
+                className="absolute inset-0 bg-yellow-200/0"
+                animate={{
+                  backgroundColor: [
+                    "rgba(254, 240, 138, 0)",
+                    "rgba(254, 240, 138, 0.3)",
+                    "rgba(254, 240, 138, 0)",
+                  ],
+                }}
+                transition={{
+                  duration: 0.2,
+                  repeat: Infinity,
+                  repeatDelay: Math.random() * 5 + 3,
+                }}
+              />
+            )}
             {/* Rain for thunderstorm */}
-            {[...Array(50)].map((_, i) => (
+            {particleCount.thunderstorm > 0 && [...Array(particleCount.thunderstorm)].map((_, i) => (
               <motion.div
                 key={`storm-rain-${i}`}
                 className="absolute w-0.5 h-16 bg-gradient-to-b from-blue-500/70 to-transparent"
+                style={{
+                  willChange: 'transform',
+                  transform: 'translateZ(0)',
+                }}
                 initial={{
-                  x: Math.random() * window.innerWidth,
+                  x: `${Math.random() * 100}%`,
                   y: -50,
                 }}
                 animate={{
-                  y: window.innerHeight + 50,
-                  x: Math.random() * window.innerWidth - 150,
+                  y: typeof window !== 'undefined' ? window.innerHeight + 50 : 1000,
+                  x: `${Math.random() * 100 - 15}%`,
                 }}
                 transition={{
                   duration: 0.8,
@@ -1269,23 +1327,26 @@ export default function WeatherApp() {
         className="relative w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-700 dark:via-indigo-700 dark:to-purple-700 shadow-2xl overflow-hidden"
       >
         {/* Animated background pattern */}
-        <div className="absolute inset-0 opacity-20">
-          <motion.div
-            className="absolute inset-0"
-            animate={{
-              backgroundPosition: ["0% 0%", "100% 100%"],
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              repeatType: "reverse",
-            }}
-            style={{
-              backgroundImage: "radial-gradient(circle at 20% 50%, rgba(255,255,255,0.2) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255,255,255,0.15) 0%, transparent 50%)",
-              backgroundSize: "200% 200%",
-            }}
-          />
-        </div>
+        {!isMobile && !prefersReducedMotion && (
+          <div className="absolute inset-0 opacity-20">
+            <motion.div
+              className="absolute inset-0"
+              animate={{
+                backgroundPosition: ["0% 0%", "100% 100%"],
+              }}
+              transition={{
+                duration: 20,
+                repeat: Infinity,
+                repeatType: "reverse",
+              }}
+              style={{
+                backgroundImage: "radial-gradient(circle at 20% 50%, rgba(255,255,255,0.2) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255,255,255,0.15) 0%, transparent 50%)",
+                backgroundSize: "200% 200%",
+                willChange: 'background-position',
+              }}
+            />
+          </div>
+        )}
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
           <div className="flex items-center justify-between flex-wrap gap-6">
@@ -1296,15 +1357,16 @@ export default function WeatherApp() {
             >
               <div className="flex items-center gap-4 mb-3">
                 <motion.div
-                  animate={{
+                  animate={!prefersReducedMotion ? {
                     rotate: [0, 10, -10, 10, 0],
                     scale: [1, 1.1, 1],
-                  }}
+                  } : {}}
                   transition={{
                     duration: 3,
                     repeat: Infinity,
                     repeatDelay: 2,
                   }}
+                  style={{ willChange: !prefersReducedMotion ? 'transform' : 'auto' }}
                 >
                   <WiDaySunny className="text-8xl text-yellow-300 drop-shadow-lg" />
                 </motion.div>
@@ -1499,15 +1561,16 @@ export default function WeatherApp() {
                 <div className="flex items-center justify-center">
                   <motion.div
                     className="text-8xl"
-                    animate={{
+                    animate={!prefersReducedMotion ? {
                       scale: [1, 1.1, 1],
                       rotate: weather.main === "clear" ? [0, 10, 0] : 0,
-                    }}
+                    } : {}}
                     transition={{
                       duration: 3,
                       repeat: Infinity,
                       ease: "easeInOut",
                     }}
+                    style={{ willChange: !prefersReducedMotion ? 'transform' : 'auto' }}
                   >
                     {getWeatherIcon(
                       weather.icon,
@@ -1709,16 +1772,17 @@ export default function WeatherApp() {
             className="text-center py-20"
           >
             <motion.div
-              animate={{
+              animate={!prefersReducedMotion ? {
                 rotate: [0, 10, -10, 10, 0],
                 scale: [1, 1.1, 1],
-              }}
+              } : {}}
               transition={{
                 duration: 3,
                 repeat: Infinity,
                 repeatDelay: 1,
               }}
               className="mb-6 inline-block"
+              style={{ willChange: !prefersReducedMotion ? 'transform' : 'auto' }}
             >
               <WiDaySunny className="text-9xl text-blue-600 dark:text-blue-400" />
             </motion.div>
@@ -1761,17 +1825,20 @@ export default function WeatherApp() {
         </div>
 
         {/* Animated gradient overlay */}
-        <motion.div
-          className="absolute inset-0 opacity-30"
-          animate={{
-            background: [
-              "radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 50%)",
-              "radial-gradient(circle at 80% 50%, rgba(139, 92, 246, 0.3) 0%, transparent 50%)",
-              "radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 50%)",
-            ],
-          }}
-          transition={{ duration: 10, repeat: Infinity }}
-        />
+        {!isMobile && !prefersReducedMotion && (
+          <motion.div
+            className="absolute inset-0 opacity-30"
+            animate={{
+              background: [
+                "radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 50%)",
+                "radial-gradient(circle at 80% 50%, rgba(139, 92, 246, 0.3) 0%, transparent 50%)",
+                "radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 50%)",
+              ],
+            }}
+            transition={{ duration: 10, repeat: Infinity }}
+            style={{ willChange: 'background' }}
+          />
+        )}
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
           {/* Stats Section */}
@@ -1790,15 +1857,16 @@ export default function WeatherApp() {
                 className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl"
               >
                 <motion.div
-                  animate={{
+                  animate={!prefersReducedMotion ? {
                     rotate: [0, 5, -5, 0],
-                  }}
+                  } : {}}
                   transition={{
                     duration: 3,
                     repeat: Infinity,
                     delay: index * 0.5,
                   }}
                   className="mb-4"
+                  style={{ willChange: !prefersReducedMotion ? 'transform' : 'auto' }}
                 >
                   <stat.Icon className={`text-6xl ${stat.color}`} />
                 </motion.div>
@@ -1849,13 +1917,14 @@ export default function WeatherApp() {
         </div>
 
         {/* Floating particles */}
-        {[...Array(5)].map((_, i) => (
+        {!isMobile && !prefersReducedMotion && [...Array(5)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-2 h-2 bg-white/20 rounded-full"
             style={{
               left: `${20 + i * 15}%`,
               top: `${30 + i * 10}%`,
+              willChange: 'transform, opacity',
             }}
             animate={{
               y: [0, -20, 0],
