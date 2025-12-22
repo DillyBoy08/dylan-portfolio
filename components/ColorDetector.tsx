@@ -438,11 +438,11 @@ export default function ColorDetector() {
               </svg>
             </div>
             <h1 className="text-4xl sm:text-5xl font-semibold text-gray-900 dark:text-white tracking-tight">
-              Color Detector
+              Colour Detector
             </h1>
           </div>
           <p className="text-base text-gray-500 dark:text-gray-400">
-            Click anywhere on an image to extract its colors
+            Click anywhere on an image to extract its colours
           </p>
         </motion.div>
 

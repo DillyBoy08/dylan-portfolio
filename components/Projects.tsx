@@ -70,9 +70,9 @@ const projects = [
     github: null,
   },
   {
-    title: "Color Detector",
-    description: "Extract and analyze colors from any image. Click to detect pixel colors, view dominant color palettes, and copy color codes instantly.",
-    tech: ["React", "TypeScript", "Canvas API", "Color Theory"],
+    title: "Colour Detector",
+    description: "Extract and analyse colours from any image. Click to detect pixel colours, view dominant colour palettes, and copy colour codes instantly.",
+    tech: ["React", "TypeScript", "Canvas API", "Colour Theory"],
     gradient: "from-pink-500 to-purple-600",
     icon: "🎨",
     previewUrl: "/color-detector",
