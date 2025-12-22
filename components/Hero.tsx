@@ -14,8 +14,8 @@ export default function Hero() {
       {/* Particle Background */}
       <ParticleBackground />
 
-      {/* Decorative Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+      {/* Decorative Elements - Hidden on mobile for performance */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none max-md:hidden" aria-hidden="true">
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 0.1, scale: 1 }}

@@ -39,7 +39,7 @@ export default function LoadingScreen() {
               }}
               className="relative"
             >
-              {/* Glow effect behind */}
+              {/* Glow effect behind - Hidden on mobile for performance */}
               <motion.div
                 animate={{
                   scale: [1, 1.2, 1],
@@ -50,7 +50,7 @@ export default function LoadingScreen() {
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
-                className="absolute inset-0 blur-3xl bg-gradient-to-r from-blue-500 to-cyan-500 opacity-30"
+                className="absolute inset-0 blur-3xl bg-gradient-to-r from-blue-500 to-cyan-500 opacity-30 max-md:hidden"
               />
 
               {/* The D letter */}

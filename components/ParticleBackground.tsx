@@ -6,10 +6,19 @@ export default function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    // Detect mobile devices and prefer reduced motion
+    const isMobile = window.innerWidth < 768;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Disable on mobile or if user prefers reduced motion
+    if (isMobile || prefersReducedMotion) {
+      return;
+    }
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
     // Set canvas size
@@ -67,8 +76,8 @@ export default function ParticleBackground() {
       }
     }
 
-    // Create particles
-    const particleCount = 80;
+    // Create particles - reduced count for better performance
+    const particleCount = 50; // Reduced from 80
     const particles: Particle[] = [];
 
     for (let i = 0; i < particleCount; i++) {
@@ -89,30 +98,41 @@ export default function ParticleBackground() {
         particle.draw();
       });
 
-      // Draw connections
-      particles.forEach((particleA, indexA) => {
-        particles.slice(indexA + 1).forEach((particleB) => {
+      // Draw connections - optimized with early distance check
+      const maxDistance = 150;
+      const maxDistanceSq = maxDistance * maxDistance; // Use squared distance to avoid sqrt
+
+      for (let i = 0; i < particles.length; i++) {
+        const particleA = particles[i];
+
+        // Only check next particles to avoid duplicate connections
+        for (let j = i + 1; j < particles.length; j++) {
+          const particleB = particles[j];
+
           const dx = particleA.x - particleB.x;
           const dy = particleA.y - particleB.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+          const distanceSq = dx * dx + dy * dy;
 
-          if (distance < 150) {
-            const opacity = 0.2 * (1 - distance / 150);
+          // Early exit if too far (avoid expensive sqrt)
+          if (distanceSq < maxDistanceSq) {
+            const distance = Math.sqrt(distanceSq);
+            const opacity = 0.2 * (1 - distance / maxDistance);
+
             // Alternate between blue, cyan, and indigo connections
             const colors = [
               `rgba(59, 130, 246, ${opacity})`,   // blue
               `rgba(6, 182, 212, ${opacity})`,    // cyan
               `rgba(99, 102, 241, ${opacity})`    // indigo
             ];
-            ctx.strokeStyle = colors[indexA % 3];
+            ctx.strokeStyle = colors[i % 3];
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(particleA.x, particleA.y);
             ctx.lineTo(particleB.x, particleB.y);
             ctx.stroke();
           }
-        });
-      });
+        }
+      }
 
       animationFrameId = requestAnimationFrame(animate);
     };
@@ -129,7 +149,7 @@ export default function ParticleBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-none"
+      className="absolute inset-0 w-full h-full pointer-events-none max-md:hidden"
       style={{ opacity: 0.4 }}
     />
   );
