@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   WiDaySunny,
@@ -100,7 +100,7 @@ export default function WeatherApp() {
 
   // Reduce particle count on mobile
   const particleCount = useMemo(() => {
-    if (prefersReducedMotion) return 0;
+    if (prefersReducedMotion) return { rain: 0, snow: 0, thunderstorm: 0 };
     if (isMobile) return {
       rain: 15,
       snow: 10,
@@ -118,7 +118,7 @@ export default function WeatherApp() {
     // Hide intro animation after 3 seconds
     const timer = setTimeout(() => setShowIntro(false), 3000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [getCurrentLocation]);
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -154,7 +154,7 @@ export default function WeatherApp() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const getCurrentLocation = () => {
+  const getCurrentLocation = useCallback(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -170,9 +170,9 @@ export default function WeatherApp() {
       setSelectedCityName("Durbanville");
       fetchWeather("Durbanville");
     }
-  };
+  }, [fetchWeatherByCoords, fetchWeather]);
 
-  const fetchWeatherByCoords = async (lat: number, lon: number) => {
+  const fetchWeatherByCoords = useCallback(async (lat: number, lon: number) => {
     setLoading(true);
     setError("");
     setCurrentCoords({ lat, lon });
@@ -192,9 +192,9 @@ export default function WeatherApp() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [unit, processWeatherData]);
 
-  const fetchWeather = async (cityName: string) => {
+  const fetchWeather = useCallback(async (cityName: string) => {
     if (!cityName.trim()) return;
 
     setLoading(true);
@@ -220,9 +220,9 @@ export default function WeatherApp() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [unit, processWeatherData]);
 
-  const improveWeatherDescription = (description: string): string => {
+  const improveWeatherDescription = useCallback((description: string): string => {
     const descriptionMap: Record<string, string> = {
       'broken clouds': 'mostly cloudy',
       'scattered clouds': 'partly cloudy',
@@ -237,9 +237,9 @@ export default function WeatherApp() {
     };
 
     return descriptionMap[description.toLowerCase()] || description;
-  };
+  }, []);
 
-  const processWeatherData = (data: any) => {
+  const processWeatherData = useCallback((data: any) => {
     const currentData = data.current;
     const forecastData = data.forecast;
 
@@ -322,7 +322,7 @@ export default function WeatherApp() {
 
       setDailyForecast(daily);
     }
-  };
+  }, [selectedCityName, improveWeatherDescription]);
 
   const handleSuggestionClick = (suggestion: CitySuggestion) => {
     setCity(suggestion.name);
