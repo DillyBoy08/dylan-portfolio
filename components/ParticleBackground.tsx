@@ -10,8 +10,8 @@ export default function ParticleBackground() {
     const isMobile = window.innerWidth < 768;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Disable on mobile or if user prefers reduced motion
-    if (isMobile || prefersReducedMotion) {
+    // Disable only if user prefers reduced motion
+    if (prefersReducedMotion) {
       return;
     }
 
@@ -76,8 +76,8 @@ export default function ParticleBackground() {
       }
     }
 
-    // Create particles - reduced count for better performance
-    const particleCount = 50; // Reduced from 80
+    // Create particles - reduced count on mobile for better performance
+    const particleCount = isMobile ? 30 : 50; // Even fewer particles on mobile
     const particles: Particle[] = [];
 
     for (let i = 0; i < particleCount; i++) {
@@ -149,7 +149,7 @@ export default function ParticleBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-none max-md:hidden"
+      className="absolute inset-0 w-full h-full pointer-events-none"
       style={{ opacity: 0.4 }}
     />
   );
