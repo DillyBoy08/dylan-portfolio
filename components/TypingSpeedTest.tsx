@@ -2,6 +2,17 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
+import {
+  TbKeyboard,
+  TbChartBar,
+  TbTarget,
+  TbFlame,
+  TbArrowLeft,
+  TbBrandGithub,
+  TbTrophy,
+  TbClock,
+} from "react-icons/tb";
 
 const textModes = {
   quotes: [
@@ -222,7 +233,7 @@ export default function TypingSpeedTest() {
   const progress = (userInput.length / currentText.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 py-8 sm:py-16 px-4 sm:px-6 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden">
       {/* Animated background gradient orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -269,32 +280,127 @@ export default function TypingSpeedTest() {
         ))}
       </AnimatePresence>
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-6 sm:mb-10"
-        >
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 dark:from-violet-400 dark:via-purple-400 dark:to-fuchsia-400 bg-clip-text text-transparent mb-3">
-            Typing Speed Test
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg font-medium">
-            Test your typing speed and accuracy
-          </p>
-          {highScore > 0 && (
+      {/* Professional Header */}
+      <motion.header
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="relative w-full bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 dark:from-violet-700 dark:via-purple-700 dark:to-fuchsia-700 shadow-2xl overflow-hidden"
+      >
+        {/* Animated background pattern */}
+        <div className="absolute inset-0 opacity-20">
+          <motion.div
+            className="absolute inset-0"
+            animate={{
+              backgroundPosition: ["0% 0%", "100% 100%"],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+            style={{
+              backgroundImage: "radial-gradient(circle at 20% 50%, rgba(255,255,255,0.2) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255,255,255,0.15) 0%, transparent 50%)",
+              backgroundSize: "200% 200%",
+            }}
+          />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+          {/* Back Button */}
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors group"
+          >
+            <TbArrowLeft className="text-xl group-hover:-translate-x-1 transition-transform" />
+            <span className="font-medium">Back to Portfolio</span>
+          </Link>
+
+          <div className="flex items-center justify-between flex-wrap gap-6">
             <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-100 to-yellow-100 dark:from-amber-900/30 dark:to-yellow-900/30 border border-amber-300 dark:border-amber-700 rounded-full shadow-sm"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
             >
-              <span className="text-xl">🏆</span>
-              <span className="font-bold text-amber-700 dark:text-amber-400 text-sm sm:text-base">
-                Best: {highScore} WPM
-              </span>
+              <div className="flex items-center gap-4 mb-3">
+                <motion.div
+                  animate={{
+                    scale: [1, 1.1, 1],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatDelay: 1,
+                  }}
+                >
+                  <TbKeyboard className="text-6xl sm:text-7xl text-white drop-shadow-lg" />
+                </motion.div>
+                <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight drop-shadow-lg">
+                  Typing Speed Test
+                </h1>
+              </div>
+              <p className="text-white/90 text-lg flex items-center gap-2 ml-1">
+                <motion.span
+                  animate={{
+                    scale: [1, 1.3, 1],
+                    opacity: [1, 0.6, 1],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                  }}
+                  className="inline-block w-2.5 h-2.5 bg-green-400 rounded-full shadow-lg shadow-green-400/50"
+                />
+                Challenge yourself and improve your typing skills
+              </p>
             </motion.div>
-          )}
-        </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="flex items-center gap-4"
+            >
+              {highScore > 0 && (
+                <div className="bg-white/20 backdrop-blur-md rounded-2xl px-6 py-3 border border-white/30 shadow-xl">
+                  <div className="text-xs text-white/80 font-medium flex items-center gap-1">
+                    <TbTrophy className="text-yellow-300" /> Personal Best
+                  </div>
+                  <motion.div
+                    key={highScore}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="text-2xl font-black text-white"
+                  >
+                    {highScore} WPM
+                  </motion.div>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Bottom wave decoration */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg className="w-full h-8" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <motion.path
+              d="M0,0 Q300,60 600,30 T1200,0 L1200,120 L0,120 Z"
+              fill="currentColor"
+              className="text-slate-50 dark:text-slate-950"
+              animate={{
+                d: [
+                  "M0,0 Q300,60 600,30 T1200,0 L1200,120 L0,120 Z",
+                  "M0,30 Q300,0 600,50 T1200,30 L1200,120 L0,120 Z",
+                  "M0,0 Q300,60 600,30 T1200,0 L1200,120 L0,120 Z",
+                ],
+              }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </svg>
+        </div>
+      </motion.header>
+
+      <div className="max-w-6xl mx-auto relative z-10 py-8 sm:py-12 px-4 sm:px-6">
 
         {/* Mode Selection */}
         <motion.div
@@ -540,6 +646,145 @@ export default function TypingSpeedTest() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Professional Footer */}
+      <motion.footer
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.6 }}
+        className="relative w-full bg-gradient-to-r from-slate-900 via-gray-900 to-slate-900 dark:from-slate-950 dark:via-gray-950 dark:to-slate-950 mt-16 overflow-hidden"
+      >
+        {/* Top wave decoration */}
+        <div className="absolute top-0 left-0 right-0 transform rotate-180">
+          <svg className="w-full h-8" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <motion.path
+              d="M0,0 Q300,60 600,30 T1200,0 L1200,120 L0,120 Z"
+              fill="currentColor"
+              className="text-slate-50 dark:text-slate-950"
+              animate={{
+                d: [
+                  "M0,0 Q300,60 600,30 T1200,0 L1200,120 L0,120 Z",
+                  "M0,30 Q300,0 600,50 T1200,30 L1200,120 L0,120 Z",
+                  "M0,0 Q300,60 600,30 T1200,0 L1200,120 L0,120 Z",
+                ],
+              }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </svg>
+        </div>
+
+        {/* Animated gradient overlay */}
+        <motion.div
+          className="absolute inset-0 opacity-30 hidden sm:block"
+          animate={{
+            background: [
+              "radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.3) 0%, transparent 50%)",
+              "radial-gradient(circle at 80% 50%, rgba(217, 70, 239, 0.3) 0%, transparent 50%)",
+              "radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.3) 0%, transparent 50%)",
+            ],
+          }}
+          transition={{ duration: 10, repeat: Infinity }}
+        />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
+          {/* Features Section */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+            {[
+              { Icon: TbChartBar, label: "Real-time Stats", value: "Live WPM Tracking", color: "text-blue-400" },
+              { Icon: TbTarget, label: "Accuracy Analysis", value: "Character-by-Character", color: "text-emerald-400" },
+              { Icon: TbFlame, label: "Streak System", value: "Build Momentum", color: "text-orange-400" },
+              { Icon: TbClock, label: "Multiple Modes", value: "4 Text Categories", color: "text-purple-400" },
+            ].map((feature, index) => (
+              <motion.div
+                key={feature.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 + index * 0.1, duration: 0.5 }}
+                whileHover={{ scale: 1.05, y: -5 }}
+                className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl"
+              >
+                <motion.div
+                  animate={{
+                    rotate: [0, 5, -5, 0],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    delay: index * 0.5,
+                  }}
+                  className="mb-4"
+                >
+                  <feature.Icon className={`text-5xl ${feature.color}`} />
+                </motion.div>
+                <div className="text-white/60 text-sm font-medium mb-1">{feature.label}</div>
+                <div className="text-white text-lg font-bold">{feature.value}</div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Main Footer Content */}
+          <div className="border-t border-white/10 pt-8">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.9, duration: 0.5 }}
+                className="text-center md:text-left"
+              >
+                <h3 className="text-2xl font-black text-white mb-2 flex items-center gap-3">
+                  <TbKeyboard className="text-3xl text-violet-400" />
+                  Typing Speed Test
+                </h3>
+                <p className="text-white/70">
+                  Improve your typing skills with real-time feedback
+                </p>
+                <p className="text-white/50 text-sm mt-2">
+                  Built with Next.js, TypeScript & Framer Motion
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1, duration: 0.5 }}
+                className="flex flex-col items-center md:items-end gap-4"
+              >
+                <Link
+                  href="/"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-semibold transition-colors"
+                >
+                  <TbArrowLeft />
+                  Back to Portfolio
+                </Link>
+                <p className="text-white/50 text-sm">
+                  © {new Date().getFullYear()} Dylan Swart. All rights reserved.
+                </p>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+
+        {/* Floating particles */}
+        {[...Array(5)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-white/20 rounded-full hidden sm:block"
+            style={{
+              left: `${20 + i * 15}%`,
+              top: `${30 + i * 10}%`,
+            }}
+            animate={{
+              y: [0, -20, 0],
+              opacity: [0.2, 0.5, 0.2],
+            }}
+            transition={{
+              duration: 3 + i,
+              repeat: Infinity,
+              delay: i * 0.5,
+            }}
+          />
+        ))}
+      </motion.footer>
     </div>
   );
 }

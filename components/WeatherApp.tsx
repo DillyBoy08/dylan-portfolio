@@ -15,8 +15,10 @@ import {
   TbWorldWww,
   TbBolt,
   TbChartBar,
-  TbCloudDataConnection
+  TbCloudDataConnection,
+  TbArrowLeft
 } from "react-icons/tb";
+import Link from "next/link";
 
 interface WeatherData {
   city: string;
@@ -1349,6 +1351,15 @@ export default function WeatherApp() {
         )}
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+          {/* Back Button */}
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors group"
+          >
+            <TbArrowLeft className="text-xl group-hover:-translate-x-1 transition-transform" />
+            <span className="font-medium">Back to Portfolio</span>
+          </Link>
+
           <div className="flex items-center justify-between flex-wrap gap-6">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
@@ -1906,10 +1917,17 @@ export default function WeatherApp() {
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1, duration: 0.5 }}
-                className="text-center md:text-right"
+                className="flex flex-col items-center md:items-end gap-4"
               >
+                <Link
+                  href="/"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-colors"
+                >
+                  <TbArrowLeft />
+                  Back to Portfolio
+                </Link>
                 <p className="text-white/50 text-sm">
-                  © {new Date().getFullYear()} Weather Forecast App. All rights reserved
+                  © {new Date().getFullYear()} Dylan Swart. All rights reserved.
                 </p>
               </motion.div>
             </div>
