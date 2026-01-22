@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import dynamic from "next/dynamic";
+import { Scene3DErrorBoundary } from "./Scene3DErrorBoundary";
 
 // Dynamically import Scene to avoid SSR issues with Three.js
 const Scene = dynamic(() => import("./Scene"), {
@@ -17,8 +18,56 @@ const Scene = dynamic(() => import("./Scene"), {
   ),
 });
 
+// Mobile fallback component
+function MobileSceneFallback() {
+  return (
+    <div className="w-full h-full bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 flex items-center justify-center">
+      <div className="text-center px-6">
+        <div className="relative mb-6">
+          <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-r from-purple-500 to-blue-500 animate-pulse" />
+          <div className="absolute inset-0 w-24 h-24 mx-auto rounded-full bg-gradient-to-r from-purple-500 to-blue-500 blur-xl opacity-50" />
+        </div>
+        <h3 className="text-2xl font-bold text-white mb-2">The Portal</h3>
+        <p className="text-gray-400 text-sm max-w-xs mx-auto">
+          For the full 3D experience, please visit on a desktop device
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function Showcase3D() {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  // Detect mobile and reduced motion preference
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    const checkReducedMotion = () => {
+      setPrefersReducedMotion(
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      );
+    };
+
+    checkMobile();
+    checkReducedMotion();
+
+    window.addEventListener('resize', checkMobile);
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    motionQuery.addEventListener('change', checkReducedMotion);
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      motionQuery.removeEventListener('change', checkReducedMotion);
+    };
+  }, []);
+
+  // Show simplified fallback on mobile or when reduced motion is preferred
+  const showFallback = isMobile || prefersReducedMotion;
 
   return (
     <section id="showcase" className="py-32 px-6 bg-black relative overflow-hidden">
@@ -53,27 +102,35 @@ export default function Showcase3D() {
             isExpanded ? "h-[500px] sm:h-[600px] md:h-[800px]" : "h-[400px] sm:h-[500px] md:h-[600px]"
           }`}
         >
-          <Suspense
-            fallback={
-              <div className="w-full h-full flex items-center justify-center bg-black">
-                <div className="text-center">
-                  <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                  <p className="text-white">Initializing 3D Scene...</p>
-                </div>
-              </div>
-            }
-          >
-            <Scene />
-          </Suspense>
+          {showFallback ? (
+            <MobileSceneFallback />
+          ) : (
+            <Scene3DErrorBoundary fallback={<MobileSceneFallback />}>
+              <Suspense
+                fallback={
+                  <div className="w-full h-full flex items-center justify-center bg-black">
+                    <div className="text-center">
+                      <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                      <p className="text-white">Initializing 3D Scene...</p>
+                    </div>
+                  </div>
+                }
+              >
+                <Scene />
+              </Suspense>
+            </Scene3DErrorBoundary>
+          )}
 
-          {/* Instructions Overlay */}
-          <div className="absolute bottom-4 left-4 right-4 bg-black/70 backdrop-blur-sm rounded-xl p-3 sm:p-4 text-white text-xs sm:text-sm">
-            <p className="font-medium mb-2">Controls:</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-gray-300">
-              <div>🖱️ Drag: Rotate</div>
-              <div>🔍 Scroll: Zoom</div>
+          {/* Instructions Overlay - only show when 3D scene is active */}
+          {!showFallback && (
+            <div className="absolute bottom-4 left-4 right-4 bg-black/70 backdrop-blur-sm rounded-xl p-3 sm:p-4 text-white text-xs sm:text-sm">
+              <p className="font-medium mb-2">Controls:</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-gray-300">
+                <div>🖱️ Drag: Rotate</div>
+                <div>🔍 Scroll: Zoom</div>
+              </div>
             </div>
-          </div>
+          )}
         </motion.div>
 
         {/* Feature Highlights */}

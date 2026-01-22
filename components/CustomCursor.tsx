@@ -106,18 +106,47 @@ export default function CustomCursor() {
       <canvas
         ref={canvasRef}
         className="fixed top-0 left-0 w-full h-full pointer-events-none z-[9999] max-md:hidden"
+        aria-hidden="true"
       />
 
       <style jsx global>{`
         /* Only hide cursor on desktop with fine pointer (not touch) */
+        /* Preserve cursor for interactive elements for accessibility */
         @media (min-width: 768px) and (pointer: fine) {
-          * {
-            cursor: none !important;
+          body {
+            cursor: none;
+          }
+
+          /* Keep cursor visible on interactive elements for accessibility */
+          a,
+          button,
+          input,
+          textarea,
+          select,
+          [role="button"],
+          [tabindex]:not([tabindex="-1"]),
+          label {
+            cursor: pointer !important;
+          }
+
+          input[type="text"],
+          input[type="email"],
+          input[type="password"],
+          input[type="search"],
+          textarea {
+            cursor: text !important;
           }
         }
 
         /* Ensure cursor shows on touch devices and mobile */
         @media (pointer: coarse), (max-width: 767px) {
+          * {
+            cursor: auto !important;
+          }
+        }
+
+        /* Respect prefers-reduced-motion */
+        @media (prefers-reduced-motion: reduce) {
           * {
             cursor: auto !important;
           }

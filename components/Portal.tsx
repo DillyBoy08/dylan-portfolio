@@ -1,15 +1,41 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Torus, Sphere, MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
 
+// TypeScript interfaces for proper typing
+interface PortalRingProps {
+  radius: number;
+  tubeRadius: number;
+  rotation: [number, number, number];
+  speed: number;
+  color: string;
+}
+
+interface EnergyOrbProps {
+  position: [number, number, number];
+  color: string;
+  speed: number;
+}
+
+interface ParticleStreamProps {
+  particleCount?: number;
+}
+
+// Performance constants
+const PARTICLE_COUNTS = {
+  DESKTOP: 1000,
+  MOBILE: 300,
+  REDUCED_MOTION: 100,
+} as const;
+
 // Portal Ring Component
-function PortalRing({ radius, tubeRadius, rotation, speed, color }: any) {
+function PortalRing({ radius, tubeRadius, rotation, speed, color }: PortalRingProps) {
   const meshRef = useRef<THREE.Mesh>(null);
 
-  useFrame((state) => {
+  useFrame(() => {
     if (meshRef.current) {
       meshRef.current.rotation.x += speed;
       meshRef.current.rotation.y += speed * 0.5;
@@ -31,11 +57,11 @@ function PortalRing({ radius, tubeRadius, rotation, speed, color }: any) {
   );
 }
 
-// Particle Stream Component
-function ParticleStream() {
+// Particle Stream Component with performance optimizations
+function ParticleStream({ particleCount = PARTICLE_COUNTS.DESKTOP }: ParticleStreamProps) {
   const particlesRef = useRef<THREE.Points>(null);
+  const frameCountRef = useRef(0);
 
-  const particleCount = 1000;
   const positions = useMemo(() => {
     const pos = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount; i++) {
@@ -48,7 +74,7 @@ function ParticleStream() {
       pos[i * 3 + 2] = (i / particleCount) * 10 - 5;
     }
     return pos;
-  }, []);
+  }, [particleCount]);
 
   const colors = useMemo(() => {
     const col = new Float32Array(particleCount * 3);
@@ -60,22 +86,29 @@ function ParticleStream() {
       col[i * 3 + 2] = 0.9 + t * 0.1; // B
     }
     return col;
-  }, []);
+  }, [particleCount]);
 
+  // Throttle expensive particle position updates to every 2nd frame
   useFrame((state) => {
-    if (particlesRef.current) {
-      particlesRef.current.rotation.z = state.clock.elapsedTime * 0.3;
+    if (!particlesRef.current) return;
 
-      // Animate particles through the tunnel
-      const positions = particlesRef.current.geometry.attributes.position.array as Float32Array;
-      for (let i = 0; i < particleCount; i++) {
-        positions[i * 3 + 2] += 0.05;
-        if (positions[i * 3 + 2] > 5) {
-          positions[i * 3 + 2] = -5;
-        }
+    frameCountRef.current++;
+
+    // Rotation runs every frame (cheap)
+    particlesRef.current.rotation.z = state.clock.elapsedTime * 0.3;
+
+    // Throttle position updates
+    if (frameCountRef.current % 2 !== 0) return;
+
+    // Animate particles through the tunnel
+    const positions = particlesRef.current.geometry.attributes.position.array as Float32Array;
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3 + 2] += 0.05;
+      if (positions[i * 3 + 2] > 5) {
+        positions[i * 3 + 2] = -5;
       }
-      particlesRef.current.geometry.attributes.position.needsUpdate = true;
     }
+    particlesRef.current.geometry.attributes.position.needsUpdate = true;
   });
 
   return (
@@ -107,7 +140,7 @@ function ParticleStream() {
 }
 
 // Energy Orbs orbiting the portal
-function EnergyOrb({ position, color, speed }: any) {
+function EnergyOrb({ position, color, speed }: EnergyOrbProps) {
   const orbRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
@@ -135,6 +168,21 @@ function EnergyOrb({ position, color, speed }: any) {
 // Main Portal Component
 export default function Portal() {
   const portalCoreRef = useRef<THREE.Mesh>(null);
+  const [streamParticleCount, setStreamParticleCount] = useState<number>(PARTICLE_COUNTS.DESKTOP);
+
+  // Detect device capabilities on mount
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.innerWidth < 768;
+
+    if (prefersReducedMotion) {
+      setStreamParticleCount(PARTICLE_COUNTS.REDUCED_MOTION);
+    } else if (isMobile) {
+      setStreamParticleCount(PARTICLE_COUNTS.MOBILE);
+    } else {
+      setStreamParticleCount(PARTICLE_COUNTS.DESKTOP);
+    }
+  }, []);
 
   useFrame((state) => {
     if (portalCoreRef.current) {
@@ -192,11 +240,11 @@ export default function Portal() {
       />
 
       {/* Particle Streams flowing through portal */}
-      <ParticleStream />
+      <ParticleStream particleCount={streamParticleCount} />
 
       {/* Second particle stream rotated */}
       <group rotation={[0, 0, Math.PI / 2]}>
-        <ParticleStream />
+        <ParticleStream particleCount={streamParticleCount} />
       </group>
 
       {/* Energy Orbs */}

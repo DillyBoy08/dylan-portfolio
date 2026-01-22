@@ -3,16 +3,35 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+// Loading duration constant
+const LOADING_DURATION = 1500;
+
 export default function LoadingScreen() {
   const [isLoading, setIsLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Simple timer - loads quickly
+    // Animate progress bar
+    const startTime = Date.now();
+    const progressInterval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const newProgress = Math.min((elapsed / LOADING_DURATION) * 100, 100);
+      setProgress(newProgress);
+
+      if (newProgress >= 100) {
+        clearInterval(progressInterval);
+      }
+    }, 50);
+
+    // Hide loading screen after duration
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1500);
+    }, LOADING_DURATION);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(progressInterval);
+    };
   }, []);
 
   return (
@@ -59,19 +78,27 @@ export default function LoadingScreen() {
               </h1>
             </motion.div>
 
-            {/* Elegant spinner */}
+            {/* Progress bar */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="flex justify-center mt-8"
+              className="mt-8 w-48 mx-auto"
             >
-              <div className="relative w-12 h-12">
-                {/* Outer ring */}
-                <div className="absolute inset-0 border-2 border-gray-200 rounded-full" />
-                {/* Spinning gradient ring */}
-                <div className="absolute inset-0 border-2 border-transparent border-t-blue-500 border-r-cyan-500 rounded-full animate-spin" />
+              {/* Progress track */}
+              <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
+                {/* Progress fill */}
+                <motion.div
+                  className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.1 }}
+                />
               </div>
+              {/* Progress text */}
+              <p className="text-sm text-gray-400 mt-2 font-medium">
+                Loading... {Math.round(progress)}%
+              </p>
             </motion.div>
           </div>
         </motion.div>

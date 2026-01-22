@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { RoundedBox, Text, MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
@@ -9,16 +9,19 @@ import ProjectCard from "./ProjectCard";
 export default function Workspace() {
   const groupRef = useRef<THREE.Group>(null);
   const [isBooted, setIsBooted] = useState(false);
+  // Use ref to prevent repeated state updates in animation loop
+  const isBootedRef = useRef(false);
 
-  // Boot up animation
+  // Boot up animation - only triggers state update once
   useFrame((state) => {
-    if (!isBooted && state.clock.elapsedTime > 1) {
+    if (!isBootedRef.current && state.clock.elapsedTime > 1) {
+      isBootedRef.current = true;
       setIsBooted(true);
     }
   });
 
-  // Sample projects data
-  const projects = [
+  // Memoize projects data to prevent recreation on every render
+  const projects = useMemo(() => [
     {
       title: "Project 1",
       description: "3D Web Experience",
@@ -37,7 +40,7 @@ export default function Workspace() {
       position: [3, 1.5, -2] as [number, number, number],
       color: "#ff2e97",
     },
-  ];
+  ], []);
 
   return (
     <group ref={groupRef}>
