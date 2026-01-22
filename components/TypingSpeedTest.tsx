@@ -335,7 +335,7 @@ export default function TypingSpeedTest() {
                 >
                   <TbKeyboard className="text-6xl sm:text-7xl text-white drop-shadow-lg" />
                 </motion.div>
-                <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight drop-shadow-lg">
+                <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight drop-shadow-lg pb-1">
                   Typing Speed Test
                 </h1>
               </div>

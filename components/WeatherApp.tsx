@@ -1385,20 +1385,6 @@ export default function WeatherApp() {
                   Weather Forecast
                 </h1>
               </div>
-              <p className="text-white/90 text-lg flex items-center gap-2 ml-20">
-                <motion.span
-                  animate={{
-                    scale: [1, 1.3, 1],
-                    opacity: [1, 0.6, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                  }}
-                  className="inline-block w-2.5 h-2.5 bg-green-400 rounded-full shadow-lg shadow-green-400/50"
-                />
-                Live updates from around the world
-              </p>
             </motion.div>
 
             <motion.div
