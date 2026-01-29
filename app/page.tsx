@@ -10,7 +10,6 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import LoadingScreen from "@/components/LoadingScreen";
-import CustomCursor from "@/components/CustomCursor";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
@@ -37,7 +36,6 @@ export default function Home() {
     <ErrorBoundary>
       <ThemeProvider>
         <LoadingScreen />
-        <CustomCursor />
         {/* Skip to main content link for accessibility */}
         <a
           href="#main-content"

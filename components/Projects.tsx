@@ -32,6 +32,7 @@ function ProjectPreview({
       <iframe
         src={previewUrl}
         title={`${title} preview`}
+        loading="lazy"
         className="w-full h-full border-0 pointer-events-none group-hover:scale-105 transition-transform duration-700 origin-top-left"
         onError={() => setIframeError(true)}
       />

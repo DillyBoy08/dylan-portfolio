@@ -1,8 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import ParticleBackground from "./ParticleBackground";
+import dynamic from "next/dynamic";
 import TypingEffect from "./TypingEffect";
+
+const ParticleBackground = dynamic(() => import("./ParticleBackground"), {
+  ssr: false,
+});
 
 export default function Hero() {
   return (

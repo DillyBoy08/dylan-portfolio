@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['three'],
+  experimental: {
+    optimizePackageImports: ['framer-motion', 'react-icons'],
+  },
   webpack: (config, { isServer }) => {
     // Shader file support for Three.js
     config.module.rules.push({
