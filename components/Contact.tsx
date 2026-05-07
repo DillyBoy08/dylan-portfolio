@@ -1,9 +1,26 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useId } from "react";
+
+function IconWarning() {
+  return (
+    <svg aria-hidden="true" className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+    </svg>
+  );
+}
+
+function IconCheck() {
+  return (
+    <svg aria-hidden="true" className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+    </svg>
+  );
+}
 
 export default function Contact() {
+  const statusId = useId();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -68,11 +85,11 @@ export default function Contact() {
       setSubmitSuccess(true);
       setErrors({});
 
-      // Reset form after 3 seconds
+      // Reset form after 5 seconds — enough time to read on mobile
       setTimeout(() => {
         setFormData({ name: "", email: "", message: "" });
         setSubmitSuccess(false);
-      }, 3000);
+      }, 5000);
     } catch (error) {
       setIsSubmitting(false);
       setErrors({
@@ -150,6 +167,11 @@ export default function Contact() {
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-purple-500 via-blue-500 to-purple-500 opacity-20 blur-2xl"></div>
             </div>
+          {/* Screen reader announcement for form status */}
+          <div id={statusId} role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+            {submitSuccess ? "Your message has been sent successfully." : ""}
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
             <div>
               <label htmlFor="name" className="block text-gray-800 dark:text-gray-200 font-bold mb-3 text-sm uppercase tracking-wide">
@@ -174,7 +196,7 @@ export default function Contact() {
                   id="name-error"
                   className="mt-2 text-sm text-red-600 dark:text-red-400 font-medium flex items-center gap-1"
                 >
-                  <span>⚠</span> {errors.name}
+                  <IconWarning /> {errors.name}
                 </motion.p>
               )}
             </div>
@@ -202,7 +224,7 @@ export default function Contact() {
                   id="email-error"
                   className="mt-2 text-sm text-red-600 dark:text-red-400 font-medium flex items-center gap-1"
                 >
-                  <span>⚠</span> {errors.email}
+                  <IconWarning /> {errors.email}
                 </motion.p>
               )}
             </div>
@@ -230,7 +252,7 @@ export default function Contact() {
                   id="message-error"
                   className="mt-2 text-sm text-red-600 dark:text-red-400 font-medium flex items-center gap-1"
                 >
-                  <span>⚠</span> {errors.message}
+                  <IconWarning /> {errors.message}
                 </motion.p>
               )}
             </div>
@@ -265,13 +287,15 @@ export default function Contact() {
                 )}
                 {submitSuccess && (
                   <span className="inline-flex items-center gap-2 text-xl">
-                    ✓ Message Sent!
+                    <IconCheck /> Message Sent!
                   </span>
                 )}
                 {!isSubmitting && !submitSuccess && (
                   <span className="inline-flex items-center gap-2">
                     Send Message
-                    <span className="text-2xl">→</span>
+                    <svg aria-hidden="true" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
                   </span>
                 )}
               </span>

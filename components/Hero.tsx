@@ -13,7 +13,7 @@ export default function Hero() {
     <section
       id="home"
       aria-label="Hero section"
-      className="min-h-screen flex items-center justify-center px-6 py-20 relative overflow-hidden bg-gradient-to-br from-blue-50 via-cyan-50 to-indigo-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"
+      className="min-h-dvh flex items-center justify-center px-6 py-20 relative overflow-hidden bg-gradient-to-br from-blue-50 via-cyan-50 to-indigo-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"
     >
       {/* Particle Background */}
       <ParticleBackground />
@@ -56,7 +56,7 @@ export default function Hero() {
           >
             <div className="px-6 py-2 bg-gradient-to-r from-blue-100 to-cyan-100 dark:from-blue-900/40 dark:to-cyan-900/40 rounded-full shadow-lg border border-blue-200 dark:border-blue-700">
               <p className="text-lg font-medium bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 bg-clip-text text-transparent">
-                👋 Hi, I&apos;m
+                <span aria-hidden="true">👋</span> Hi, I&apos;m
               </p>
             </div>
           </motion.div>

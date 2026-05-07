@@ -82,9 +82,10 @@ export default function About() {
                   className="space-y-6 mb-10"
                 >
                   <p className="text-xl font-medium text-gray-800 dark:text-gray-200 leading-relaxed max-w-2xl">
-                    Building modern web experiences with cutting-edge technologies.
-                    <span className="inline-block ml-2 px-3 py-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-lg text-green-700 dark:text-green-400 text-sm font-bold">
-                      🇿🇦 South Africa
+                    Full-stack developer based in South Africa, building production web apps with React, Next.js, and Python. I care about clean architecture, accessibility, and shipping things that actually work.
+                    <span className="inline-flex items-center gap-1.5 ml-2 px-3 py-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-lg text-green-700 dark:text-green-400 text-sm font-bold">
+                      <span aria-hidden="true">🇿🇦</span>
+                      <span>South Africa</span>
                     </span>
                   </p>
                   <div className="flex flex-wrap gap-3">

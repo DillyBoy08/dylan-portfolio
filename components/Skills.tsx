@@ -169,16 +169,16 @@ export default function Skills() {
                         {skill.name}
                       </h3>
 
-                      {/* Category tag */}
-                      <div className={`
-                        inline-block px-2 py-1 rounded-full text-xs font-medium
-                        bg-gray-100 dark:bg-slate-800
-                        text-gray-600 dark:text-gray-400
-                        opacity-0 group-hover:opacity-100
-                        transition-opacity duration-500
-                        ${isFeatured ? '' : 'hidden sm:inline-block'}
-                      `}>
-                        {skill.category}
+                      {/* Category + Core badge — always visible */}
+                      <div className="flex items-center gap-1.5 flex-wrap justify-center">
+                        <div className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-gray-400">
+                          {skill.category}
+                        </div>
+                        {isFeatured && (
+                          <div className="inline-block px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
+                            Core
+                          </div>
+                        )}
                       </div>
                     </div>
 

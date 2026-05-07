@@ -43,7 +43,7 @@ export default function Home() {
         >
           Skip to main content
         </a>
-        <main id="main-content" className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
+        <main id="main-content" className="min-h-dvh bg-white dark:bg-slate-950 transition-colors duration-300">
           <Navbar />
           <Hero />
           <Projects />

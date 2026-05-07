@@ -27,9 +27,13 @@ body {
   color: var(--foreground);
   background: var(--background);
   overflow-x: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
 }
 
 /* Prevent pull-to-refresh on mobile */
@@ -106,9 +110,10 @@ body {
   -webkit-tap-highlight-color: rgba(139, 92, 246, 0.2);
 }
 
-/* Fix viewport height on mobile browsers */
-@supports (-webkit-touch-callout: none) {
-  .min-h-screen {
+/* dvh fallback for browsers that don't support it (pre iOS 15.4 / Chrome 108) */
+@supports not (min-height: 1dvh) {
+  .min-h-dvh {
     min-height: -webkit-fill-available;
+    min-height: 100vh;
   }
 }
